@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Routing dashboard</h1>
+  <p class="muted">Live source selection per community. Refresh to re-run the routing engine.</p>
+</div>
+
+<div class="grid">
+  {% for c in communities %}
+  {% set log = latest_logs[c.id] %}
+  <a class="card community-card source-{{ log.selected_source }}" href="{{ url_for('dashboard.community_detail', community_id=c.id) }}">
+    <div class="card-top">
+      <h2>{{ c.name }}</h2>
+      <span class="badge badge-{{ log.selected_source }}">{{ log.selected_source|upper }}</span>
+    </div>
+    <p class="muted">{{ c.district }}</p>
+    <div class="stat-row">
+      <div><span class="stat-label">Demand</span><span class="stat-val">{{ c.demand_kw }} kW</span></div>
+    </div>
+    <p class="reason">{{ log.reason }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

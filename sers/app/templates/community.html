@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ community.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <a class="back-link" href="{{ url_for('dashboard.home') }}">&larr; All communities</a>
+  <h1>{{ community.name }}</h1>
+  <p class="muted">{{ community.district }} · Demand: {{ community.demand_kw }} kW</p>
+</div>
+
+<section>
+  <h2 class="section-title">Energy sources</h2>
+  <div class="grid">
+    {% for s in community.sources %}
+    <div class="card source-card {{ 'inactive' if not s.is_active }}">
+      <div class="card-top">
+        <h3>{{ s.source_type|title }}</h3>
+        <span class="dot {{ 'dot-on' if s.is_active else 'dot-off' }}"></span>
+      </div>
+      <div class="stat-row">
+        <div><span class="stat-label">Output</span><span class="stat-val">{{ s.output_kw }} kW</span></div>
+        {% if s.source_type == 'battery' %}
+        <div><span class="stat-label">Charge</span><span class="stat-val">{{ s.charge_pct }}%</span></div>
+        {% endif %}
+      </div>
+      <form method="POST" action="{{ url_for('dashboard.toggle_source', source_id=s.id) }}">
+        <button class="btn btn-toggle" type="submit">
+          {{ 'Deactivate' if s.is_active else 'Activate' }}
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2 class="section-title">Routing history</h2>
+  <table class="log-table">
+    <thead>
+      <tr><th>Time</th><th>Source</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      {% for log in history %}
+      <tr>
+        <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td><span class="badge badge-{{ log.selected_source }}">{{ log.selected_source|upper }}</span></td>
+        <td class="muted">{{ log.reason }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
