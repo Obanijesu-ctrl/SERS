@@ -1,6 +1,6 @@
 """
 Seeds a minimal demo dataset so the app is immediately usable after
-`flask run` — this is what your demo video should walk through.
+`flask run` 
 
 Default login (created only if it doesn't already exist):
     username: admin
